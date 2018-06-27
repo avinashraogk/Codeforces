@@ -1,0 +1,70 @@
+package com.problems.codeforces;
+
+import java.util.Scanner;
+
+/**
+ * http://codeforces.com/contest/957/problem/D
+ * 
+ * Logic : First find out maximum marking found.
+ * then next on wards it will be same for next days.
+ * for previous days , decrees one daily. 
+ * whenever the marking is greater than this number, then update the markings.
+ * 
+ * Note : Marking is continues non decreasing series. 
+ * 
+ * status : ACCEPTED
+ * 
+ * @author avinash.rao
+ *
+ */
+public class D957_RiversideCurio {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] waterLevel = new int[n];
+        int[] markings = new int[n];
+        int max = 0;
+        int maxPosition = 0;
+        
+        // finding max position.
+        for (int i = 0; i < n; i++) {
+            waterLevel[i] = sc.nextInt();
+            if (max <= waterLevel[i]) {
+                max = waterLevel[i];
+                maxPosition = i;
+            }
+        }
+        
+        // markings after max position found. it will not change.
+        markings[0] = waterLevel[0] + 1;
+        for (int i = maxPosition; i < n; i++) {
+            markings[i] = max + 1;
+        }
+
+        // probable max markings.
+        int markingsToAdd = max;
+        for (int i = maxPosition - 1; i >= 0; i--) {
+            if (markingsToAdd <= waterLevel[i]) {
+                markingsToAdd = waterLevel[i] + 1;
+            }
+            markings[i] = markingsToAdd;
+            markingsToAdd--;
+        }
+
+        // making it non decreasing series !
+        for (int i = 0; i < n - 1; i++) {
+            if (markings[i + 1] < markings[i]) {
+                markings[i + 1] = markings[i];
+            }
+        }
+        
+        // Logic to find the markings under water 
+        long markingsUnderWater = 0;
+        for (int i = 0; i < n; i++) {
+            markingsUnderWater += markings[i] - (waterLevel[i] + 1);
+        }
+
+        System.out.println(markingsUnderWater);
+    }
+}
